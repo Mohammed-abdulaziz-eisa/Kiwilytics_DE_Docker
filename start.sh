@@ -17,6 +17,16 @@ airflow users create \
     --email admin@kiwilytics.com \
     --password kiwilytics || echo "User already exists"
 
+# Create PostgreSQL connection for DAGs
+echo "Creating PostgreSQL connection..."
+airflow connections add 'postgres_conn' \
+    --conn-type 'postgres' \
+    --conn-host 'postgres' \
+    --conn-login 'kiwilytics' \
+    --conn-password 'kiwilytics' \
+    --conn-port '5432' \
+    --conn-schema 'retaildb' || echo "Connection already exists"
+
 # Wait for PostgreSQL if available
 if [ "$AIRFLOW__DATABASE__SQL_ALCHEMY_CONN" != "sqlite:///opt/airflow/airflow.db" ]; then
     echo "Waiting for PostgreSQL..."

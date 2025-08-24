@@ -201,3 +201,8 @@ For issues or questions:
 1. Check the logs: `make logs`
 2. Review the migration guide: `docs/MIGRATION_GUIDE.md`
 3. Reset and rebuild: `make clean && make build`
+
+
+## Important Notice
+
+To ensure a smooth migration and access to all required datasets, please download the `Kiwilytics_VM.ova` file and place it in the root directory of the `Kiwilytics_DE_Docker` project (e.g., `/path/to/Kiwilytics_DE_Docker`). This step is required for extracting legacy data and materials from the original virtual machine environment.
