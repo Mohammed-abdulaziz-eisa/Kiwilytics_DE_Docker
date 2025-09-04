@@ -1,4 +1,4 @@
-#  VM to Docker Migration Guide
+# VM to Docker Migration Guide
 
 ## Recommended Approach
 
@@ -46,7 +46,7 @@ If you don't need the existing VM data:
 make quick-setup
 ```
 
-## 🔧 Why This Is Better Than .ova Extraction
+## Why This Is Better Than .ova Extraction
 
 | Issue | .ova Extraction | This Approach |
 |-------|----------------|---------------|
@@ -55,23 +55,6 @@ make quick-setup
 | **Permissions** | ❌ UID/GID conflicts | ✅ Proper user setup |
 | **Dependencies** | ❌ System-level configs | ✅ Clean environment |
 | **Maintenance** | ❌ Complex debugging | ✅ Standard Docker |
-
-## Technical Specifications
-
-### Current Version Details
-- **Airflow**: 2.8.1 (stable release with Python 3.11 support)
-- **Python**: 3.11-slim
-- **PostgreSQL**: 15
-- **Pendulum**: 2.1.2 (pinned for compatibility)
-- **Flask-Session**: 0.5.0 (required dependency)
-- **Pandas**: 2.1.3
-- **Matplotlib**: 3.8.2
-- **Jupyter**: 1.0.0
-
-### Port Configuration
-- **Airflow Web UI**: 8080
-- **Jupyter Notebook**: 8888
-- **PostgreSQL**: 5433 (mapped from container port 5432)
 
 ## Benefits of Docker Approach
 

@@ -206,33 +206,14 @@ psql -h localhost -p 5433 -U kiwilytics -d retaildb
 #### Issue 1: Port Already in Use
 **Symptoms**: Error message "Ports are not available" or "address already in use"
 
-**Common Port Conflicts**:
-- **PostgreSQL (5432)**: Often conflicts with local PostgreSQL installations
-- **Airflow (8080)**: May conflict with other web services
-- **Jupyter (8888)**: May conflict with other Jupyter instances
-
 **Solution**:
 ```bash
-# Check what's using the ports
+# Check what's using the port
 lsof -i :8080
 lsof -i :8888
-lsof -i :5432  # Check if local PostgreSQL is running
-lsof -i :5433  # Our Docker PostgreSQL port
+lsof -i :5433
 
-# If port 5432 is in use (local PostgreSQL), our setup uses 5433 instead
-# If other ports conflict, modify docker-compose.yml:
-```
-
-**Port Configuration in docker-compose.yml**:
-```yaml
-services:
-  postgres:
-    ports:
-      - "5433:5432"  # Host port 5433 maps to container port 5432
-  kiwilytics:
-    ports:
-      - "8080:8080"  # Airflow
-      - "8888:8888"  # Jupyter
+# Stop conflicting services or change ports in docker-compose.yml
 ```
 
 #### Issue 2: Containers Won't Start
@@ -282,54 +263,6 @@ docker compose exec postgres pg_isready -U kiwilytics
 
 # Restart database
 docker compose restart postgres
-```
-
-#### Issue 5: Volume Mount Errors
-**Symptoms**: Error "read-only file system" or "unable to start container process"
-
-**Common Causes**:
-- Conflicting volume mounts (trying to mount subdirectories of already mounted directories)
-- Missing directories
-- Permission issues
-
-**Solution**:
-```bash
-# Check if required directories exist
-ls -la dags/ notebooks/ data/
-
-# Create missing directories if needed
-mkdir -p dags notebooks data
-
-# Check for conflicting mounts in docker-compose.yml
-# Ensure no overlapping mount points like:
-# - ./dags:/opt/airflow/dags
-# - ./custom:/opt/airflow/dags/custom  # This conflicts!
-
-# Correct configuration:
-# - ./extracted/airflow/dags:/opt/airflow/dags/extracted:ro
-# - ./dags:/opt/airflow/dags/custom:rw
-```
-
-#### Issue 6: Pendulum Timezone Errors (FIXED in v2.0)
-**Symptoms**: `TypeError: 'module' object is not callable` during Airflow initialization
-
-**Status**: **FIXED** - This error has been resolved in version 2.0
-
-**What was fixed**:
-- Pinned pendulum to version 2.1.2 for compatibility
-- Updated Airflow to version 2.8.1 with better Python 3.11 support
-- Added flask-session dependency
-- Configured proper timezone settings
-
-**If you still encounter this error**:
-```bash
-# Ensure you're using the latest version
-git pull origin main
-
-# Clean and rebuild
-make clean
-make build
-make up
 ```
 
 ### Reset and Recovery

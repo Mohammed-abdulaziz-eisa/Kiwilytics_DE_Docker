@@ -21,7 +21,6 @@
 -- sqlines demo *** or table 'categories'
 --
 
--- add this script using DBeaver to create the table and insert the data 
 -- sqlines for evaluation use only (14 days)
 create table categories (
   categoryid int not null,
