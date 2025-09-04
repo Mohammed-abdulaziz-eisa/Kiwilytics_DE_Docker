@@ -81,7 +81,7 @@ services:
       POSTGRES_USER: kiwilytics
       POSTGRES_PASSWORD: kiwilytics
     ports:
-      - "5432:5432"
+      - "5433:5432"
     volumes:
       - postgres_data:/var/lib/postgresql/data
       - ./retaildb_backup.sql:/docker-entrypoint-initdb.d/01-restore.sql:ro
@@ -106,6 +106,8 @@ services:
       - AIRFLOW__CORE__EXECUTOR=LocalExecutor
       - AIRFLOW__DATABASE__SQL_ALCHEMY_CONN=postgresql+psycopg2://kiwilytics:kiwilytics@postgres:5432/retaildb
       - AIRFLOW__CORE__LOAD_EXAMPLES=False
+      - AIRFLOW__CORE__DEFAULT_TIMEZONE=UTC
+      - AIRFLOW__WEBSERVER__DEFAULT_UI_TIMEZONE=UTC
     depends_on:
       postgres:
         condition: service_healthy
@@ -119,6 +121,8 @@ FROM python:3.11-slim
 
 ENV AIRFLOW_HOME=/opt/airflow
 ENV DEBIAN_FRONTEND=noninteractive
+ENV AIRFLOW__CORE__DEFAULT_TIMEZONE=UTC
+ENV AIRFLOW__WEBSERVER__DEFAULT_UI_TIMEZONE=UTC
 
 # Install system dependencies
 RUN apt-get update && apt-get install -y \
@@ -129,11 +133,13 @@ RUN apt-get update && apt-get install -y \
 
 # Install Python packages
 RUN pip install --no-cache-dir \
-    apache-airflow==2.7.2 \
+    apache-airflow==2.8.1 \
     pandas==2.1.3 \
     matplotlib==3.8.2 \
     psycopg2-binary==2.9.9 \
-    jupyter==1.0.0
+    jupyter==1.0.0 \
+    pendulum==2.1.2 \
+    flask-session==0.5.0
 
 # Create user and directories
 RUN useradd -m -u 1000 kiwilytics && \
@@ -197,7 +203,7 @@ echo " All services started!"
 echo " Access points:"
 echo "   - Airflow: http://localhost:8080 (kiwilytics/kiwilytics)"
 echo "   - Jupyter: http://localhost:8888"
-echo "   - PostgreSQL: localhost:5432 (kiwilytics/kiwilytics)"
+echo "   - PostgreSQL: localhost:5433 (kiwilytics/kiwilytics)"
 
 # Keep container running
 tail -f /dev/null

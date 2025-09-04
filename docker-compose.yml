@@ -22,20 +22,20 @@ services:
       - "8080:8080"
       - "8888:8888"
     volumes:
-      - ./extracted/airflow/dags:/opt/airflow/dags/extracted:ro
+      - ./extracted/airflow/dags:/opt/airflow/dags:ro
       - ./extracted/github:/home/kiwilytics/Desktop/github:ro
-      - ./dags:/opt/airflow/dags/custom
+      - ./dags:/opt/airflow/dags:ro
       - ./notebooks:/home/kiwilytics/notebooks
       - ./data:/home/kiwilytics/data
-      - airflow_data:/opt/airflow
     environment:
       - AIRFLOW__CORE__EXECUTOR=LocalExecutor
       - AIRFLOW__DATABASE__SQL_ALCHEMY_CONN=postgresql+psycopg2://kiwilytics:kiwilytics@postgres:5432/retaildb
       - AIRFLOW__CORE__LOAD_EXAMPLES=False
+      - AIRFLOW__CORE__DEFAULT_TIMEZONE=UTC
+      - AIRFLOW__WEBSERVER__DEFAULT_UI_TIMEZONE=UTC
     depends_on:
       postgres:
         condition: service_healthy
 
 volumes:
   postgres_data:
-  airflow_data:

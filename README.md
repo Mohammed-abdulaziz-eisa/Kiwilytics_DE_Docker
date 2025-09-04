@@ -8,6 +8,8 @@ A modern Docker-based environment for Kiwilytics data Engineering workflows, mig
 **Jupyter**: http://localhost:8888  
 **PostgreSQL**: localhost:5433 (retaildb/kiwilytics/kiwilytics)
 
+> **Note**: PostgreSQL runs on port 5433 (instead of the default 5432) to avoid conflicts with local PostgreSQL installations.
+
 ## Complete Setup Guide
 
 ### For First-Time Users (Complete Setup)
@@ -76,16 +78,22 @@ make down
    ```bash
    lsof -i :8080
    lsof -i :8888
-   lsof -i :5433
+   lsof -i :5432  # Check if local PostgreSQL is running
+   lsof -i :5433  # Our Docker PostgreSQL port
    ```
 
-2. **Reset and restart**:
+2. **Common issues and solutions**:
+   - **Port 5432 in use**: Our setup uses port 5433 to avoid conflicts
+   - **Volume mount errors**: Check that `dags/`, `notebooks/`, and `data/` directories exist
+   - **Container won't start**: Check logs with `make logs`
+
+3. **Reset and restart**:
    ```bash
    make down
    make up
    ```
 
-3. **Full reset** (if needed):
+4. **Full reset** (if needed):
    ```bash
    make clean
    make build
@@ -160,6 +168,23 @@ kiwilytics/
 └── data/                  # Data files
 ```
 
+## Technical Specifications
+
+### Current Version Details
+- **Airflow**: 2.8.1 (stable release with Python 3.11 support)
+- **Python**: 3.11-slim
+- **PostgreSQL**: 15
+- **Pendulum**: 2.1.2 (pinned for compatibility)
+- **Flask-Session**: 0.5.0 (required dependency)
+- **Pandas**: 2.1.3
+- **Matplotlib**: 3.8.2
+- **Jupyter**: 1.0.0
+
+### Port Configuration
+- **Airflow Web UI**: 8080
+- **Jupyter Notebook**: 8888
+- **PostgreSQL**: 5433 (mapped from container port 5432)
+
 ## Prerequisites
 
 - Docker Desktop installed and running
@@ -175,9 +200,14 @@ kiwilytics/
 
 ### Common Issues
 
-1. **Port conflicts**: If ports 8080, 8888, or 5432 are in use, modify `docker-compose.yml`
-2. **Permission issues**: Ensure Docker has access to the project directory
-3. **Build failures**: Check Docker logs with `make logs`
+1. **Port conflicts**: 
+   - Port 5432 often conflicts with local PostgreSQL - our setup uses 5433
+   - If ports 8080 or 8888 are in use, modify `docker-compose.yml`
+2. **Volume mount errors**: 
+   - Ensure `dags/`, `notebooks/`, and `data/` directories exist
+   - Check for conflicting volume mounts in `docker-compose.yml`
+3. **Permission issues**: Ensure Docker has access to the project directory
+4. **Build failures**: Check Docker logs with `make logs`
 
 ### Reset Environment
 ```bash
