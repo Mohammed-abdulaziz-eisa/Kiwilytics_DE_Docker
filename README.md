@@ -2,9 +2,15 @@
 
 A modern Docker-based environment for Kiwilytics data Engineering workflows, migrated from VirtualBox VM.
 
+# Step-by-Step Video 
+
+A video walkthrough of the setup process is available at:
+
+https://youtu.be/hpqzM6whnSk?si=ReqyrYXRoLMn_E4u
+
 ## Quick Connection Reference
 
-**Airflow**: http://localhost:8080 (kiwilytics/kiwilytics)  
+**Airflow**: http://localhost:8080/login/  (kiwilytics/kiwilytics)  
 **Jupyter**: http://localhost:8888  
 **PostgreSQL**: localhost:5433 (retaildb/kiwilytics/kiwilytics)
 
